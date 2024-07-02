@@ -1,16 +1,16 @@
 const { Router } = require('express');
-const { create, list, listById, update, remove } = require('./controllers/users.js')
+const { create, list, listById, update, remove } = require('./controllers/users.js');
+const { health } = require('./controllers/health.js');
+const { tokenValidator } = require('./middlewares/AuthMiddleware.js');
 
 const routes = new Router();
 
-routes.get('/health', (req, res) => {
-    return res.status(200).json('API STATUS: [ONLINE]');
-});
+routes.get('/health', health);
 
-routes.post('/users', create);
-routes.get('/users', list);
-routes.get('/users/:id', listById);
-routes.put('/users/:id', update);
-routes.delete('/users/:id', remove);
+routes.post('/users', tokenValidator, create);
+routes.get('/users', tokenValidator, list);
+routes.get('/users/:id', tokenValidator, listById);
+routes.put('/users/:id', tokenValidator, update);
+routes.delete('/users/:id', tokenValidator, remove);
 
 module.exports = routes;
